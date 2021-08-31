@@ -1,67 +1,11 @@
-package image_processing
+package main
 
 import (
-	"fmt"
 	"image"
 	c "image/color"
-	"log"
-
-	"time"
-
-	//"time"
-
-	motor "github.com/RooteeHealth/ALI/tree/ALI_Go/internal/motor_control"
 
 	"gocv.io/x/gocv"
 )
-
-func Move_z() bool {
-	done := false
-
-	start := time.Now() // start to count
-	fmt.Println("Start Move Z-axis to find optimal distance")
-
-	frame_cnt := 0
-
-	for !done {
-		if Ip_image.Empty() {
-			fmt.Println("Ip_image is empty...")
-			continue
-		}
-
-		if frame_cnt == 0 {
-			motor.Dxl_ZCalib()
-			motor.Dxl_1Stepmove(-1600, 3)
-			time.Sleep(500 * time.Millisecond)
-		}
-
-		frame := GetImage()
-		frame_cnt++
-
-		detected := Lightdetector(frame)
-
-		if detected.Empty() {
-			fmt.Println("detected empty!!!!!")
-			OV_LIGHT_DETECT = false
-			done = true
-			break
-		}
-
-		fmt.Println("Detected : ", detected)
-
-		// Draw bounding box
-		OV_LIGHT_DETECT = true
-		Cord.OV_Rect = detected
-
-		motor.Dxl_1Stepmove(+motor.Z_STEP, 3)
-		time.Sleep(20 * time.Millisecond)
-	}
-
-	elapsed := time.Since(start)
-	log.Printf("<----------Move Z time took %s", elapsed)
-
-	return done
-}
 
 func Lightdetector(buffer gocv.Mat) image.Rectangle {
 	///read Image
