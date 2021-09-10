@@ -1,25 +1,3 @@
-###############################################################################
-# Copyright (c) 2014, Blake Wulfe
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-# THE SOFTWARE.
-###############################################################################
-
 """
 File: mergevec.py
 Author: blake.w.wulfe@gmail.com
@@ -93,7 +71,6 @@ def merge_vec_files(vec_directory, output_vec_file):
 	:type output_vec_file: string
 	:param output_vec_file: Name of aggregate .vec file for output.
 		Ex: '/Users/username/Documents/aggregate_vec_file.vec'
-
 	"""
 
 	# Check that the .vec directory does not end in '/' and if it does, remove it.
@@ -130,6 +107,11 @@ def merge_vec_files(vec_directory, output_vec_file):
 		try:
 			with open(f, 'rb') as vecfile:
 				content = b''.join((line) for line in vecfile.readlines())
+				
+				# Check the size of files to prevent errors
+				if len(content) < 12 :
+					continue
+
 				val = struct.unpack('<iihh', content[:12])
 				num_images = val[0]
 				image_size = val[1]
@@ -167,3 +149,5 @@ if __name__ == '__main__':
 		sys.exit('mergevec requires an output filename. Call mergevec.py with -o your_output_filename')
 
 	merge_vec_files(vec_directory, output_filename)
+
+
